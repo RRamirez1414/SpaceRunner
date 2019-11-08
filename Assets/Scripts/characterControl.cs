@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class characterControl : MonoBehaviour {
 
@@ -23,9 +24,14 @@ public class characterControl : MonoBehaviour {
 	public bool floating = false; 
 
 	public GameObject NoGoingBack; 
-	public AudioClip wilhelm; 
+	public AudioClip wilhelm;
 
-	void Awake()
+
+
+    [SerializeField]
+    private Image health_UI;
+
+    void Awake()
 	{
 		//Reference 
 		groundCheck = transform.Find ("groundCheck");
@@ -42,7 +48,7 @@ public class characterControl : MonoBehaviour {
 	{
 		if (alive) 
 		{
-			/*if (Input.GetAxis (axisName) < 0)
+			if (Input.GetAxis (axisName) < 0)
 			{
 				MoveLeftPress();
 				MoveRightRelease();
@@ -55,7 +61,7 @@ public class characterControl : MonoBehaviour {
 			if( Input.GetAxis( axisName) == 0){
 				MoveLeftRelease();
 				MoveRightRelease();
-			}*/
+			}
 			if( moveLeftPressed ){
 				Vector3 newScale = transform.localScale;
 				newScale.y = 1.0f;
@@ -131,8 +137,8 @@ public class characterControl : MonoBehaviour {
 				GetComponent<Rigidbody2D>().AddForce (Vector2.up * 100);
 				GetComponent<Rigidbody2D>().AddTorque (90f);
 
-				animator.SetTrigger ("player_dead"); 
-			AudioSource.PlayClipAtPoint(wilhelm, transform.position);
+            animator.SetTrigger("player_dead");
+			AudioSource.PlayClipAtPoint(wilhelm, transform.position, 1f);
 				
 		}
 
@@ -151,8 +157,12 @@ public class characterControl : MonoBehaviour {
 
 	public void TakeDamage () {
 		animator.SetTrigger ("player_damage"); 
-		health -= 10; 
-	}
+		health -= 10;
+        
+        if (health_UI != null) {
+            health_UI.fillAmount = health / 100f;
+        }
+    }
 
 	void OnCollisionEnter2D (Collision2D other){
 		if (other.gameObject.tag == "enemy") {
